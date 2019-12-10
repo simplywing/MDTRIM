@@ -1,0 +1,212 @@
+<!DOCTYPE html> 
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="PowerShell Remote Installation Module for Microsoft Deployment Toolkit">
+  <meta name="author" content="Joël Ammann">
+
+  <title>PowerShell RIM</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <style>
+  body {
+    padding-top: 54px;
+  }
+  @media (min-width: 992px) {
+    body {
+      padding-top: 56px;
+    }
+  }
+
+  code {
+  	color:#eeedf0;
+  	background-color: #002553;
+  	font-size: 1.4rem;
+  }
+
+  .ps-function {
+  	color:#ffff00;
+  }
+  .ps-argument {
+  	color:#808080;
+  }
+  .ps-string{
+  	color:#008080;
+  }
+  .ps-white {
+  	color:#eeedf0;
+  }
+
+</style>
+
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">Powershell RIM</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="modal" data-target="#ChangelogModal">Changelog</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="modal" data-target="#AboutModal">About</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h1 class="mt-5">Powershell Remote Installation Module for Microsoft Deployment Toolkit</h1>
+        <p class="lead">Current Version 0.19. Written by Joël Ammann.</p>
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#DownloadModal">
+          Download .psd1/.psm1
+        </button>
+      </div>
+      <div class="col-lg-12">
+      	<div style="margin-top: 40px"></div>
+      	<h2>How it works</h2>
+      	Powershell RIM extends the functionality of Microsoft Deployment Toolkit and allows <span style="font-weight: bold;">remote installation of Windows applications to Windows clients</span>. The applications are maintained in MDT and can be used for installation in MDT as well as for remote installation with Powershell RIM. <br><br>
+
+      	Powershell RIM is based on WinRM for remote execution.
+      	To work around the Kerberos double-hop problem, all files needed for the installation are copied to the client. This is done via the administrative share C$ <br><br>
+
+      	After remote execution, the previously copied files are automatically deleted.
+      	<div style="margin-top: 40px"></div>
+      	<h2>Installation</h2>
+      	<p>To install Powershell RIM, download both the Manifest (rim.psd1) and the Module File (rim.psm1). Use: <br><code><span class="ps-function">Import-Module</span> rim.psd1</code><br> to import the module into Powershell.</p>
+      	<p>Use <br><code><span class="ps-function">Set-MdtDeploymentShare</span><span class="ps-argument"> -DeploymentShare</span><span class="ps-string"> "\\DEPLOYMENTSERVER\DEPLOYMENTSHARE$"</span></code><br> to define your default Deployment Share.</p>
+      	<div style="margin-top: 40px"></div>
+      	<h2>Usage</h1>
+      	<p>Powershell RIM integrates into MDT (Microsoft Deployment Toolkit) and uses a common application database. The <span style="font-weight: bold;">Get-MdtApplications</span> Cmdlet can be used to list all exising applications inside a Deployment Share. For more information about this Cmdlet, use:<br><code><span class="ps-function">Get-Help</span> Get-MdtApplications</code><br><br>For a nice overview of all your applications (as shown in the screenshot below), use:<br>
+      	<code><span class="ps-function">Get-MdtApplications</span> | <span class="ps-function">Sort-Object</span> ApplicationName | <span class="ps-function">Format-Table</span></code></p>
+      	<img src="src/img/gmdta.png" alt="Get-MdtApplications Screenshot" width="1713" class="img-fluid">
+      	<div style="margin-top: 40px"></div>
+      	<p>Use the <span style="font-weight: bold;">Install-MdtApplications</span> Cmdlet to install one or many applications to one or multiple Windows Clients. For more information about this Cmdlet, use:<br><code><span class="ps-function">Get-Help</span> Install-MdtApplications</code></p>
+      	<img src="src/img/imdta.png" alt="Install-MdtApplications Screenshot" class="img-fluid">
+      	<div style="margin-top: 40px"></div>
+      	<p>Use the <span style="font-weight: bold;">-Concurrent</span> switch to install applications on multiple devices simultaniously.</p>
+      	<img src="src/img/concurrent.png" alt="Install-MdtApplications Concurrent Screenshot" class="img-fluid">
+      	<div style="margin-top: 40px"></div>
+      	<h2>Improvements</h2>
+      	<p>If you found a bug or have an idea to improve Powershell RIM, I am happy to hear from you: <a href="mailto:joel@simplywing.ch?subject=Powershell RIM">joel@simplywing.ch</a></p> 	
+      </div>
+    </div>
+  </div>
+
+  <!-- Download Modal -->
+  <div class="modal fade" id="DownloadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">RIM Download</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ul class="list-unstyled">
+            <li><a href="rim.psd1">rim.psd1</a> - Manifest File</li>
+            <li><a href="rim.psm1">rim.psm1</a> - Module File</li>
+          </ul>  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Modal -->
+  <div class="modal fade" id="AboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">About RIM</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Copyright 2018 Joël Ammann<br><br>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at <br><br>
+
+    <a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a> <br><br>
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Changelog Modal -->
+    <div class="modal fade" id="ChangelogModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Changelog</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h4>0.19</h4>
+            <p>
+            	- Minor improvements <br>
+            	- Added more bugs to fix later
+
+            </p>
+            <h4>0.18</h4>
+            <p>
+            	- Added DNS check before installation <br>
+            	- Improved verbose logging <br>
+            	- Improved code comments
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+<!-- Bootstrap core JavaScript -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
