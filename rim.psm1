@@ -392,13 +392,13 @@ function Install-MdtApplications
                 if($env:verbose)
                 {
                     Invoke-Command -ComputerName $computer `
-                    -ScriptBlock {$a = $args[0]; $b = $args[1]; Set-Location -Path "$a"; cmd /c "$b"; return "Exit-Code: "+$LastExitCode} `
+                    -ScriptBlock {$a = $args[0]; $b = $args[1]; if(Test-Path $a){Set-Location -Path "$a";} cmd /c "$b"; return "Exit-Code: "+$LastExitCode} `
                     -ArgumentList $workingDirectory, $applicationCommandLine  -ErrorAction Stop
                 }
                 else
                 {
                     $returnCode = Invoke-Command -ComputerName $computer `
-                    -ScriptBlock {$a = $args[0]; $b = $args[1]; Set-Location -Path "$a"; cmd /c "$b" | Out-Null; return $LastExitCode} `
+                    -ScriptBlock {$a = $args[0]; $b = $args[1]; if(Test-Path $a){Set-Location -Path "$a";} cmd /c "$b" | Out-Null; return $LastExitCode} `
                     -ArgumentList $workingDirectory, $applicationCommandLine  -ErrorAction Stop
 
                     $validExitCodes = 0, 1641, 3010
@@ -558,7 +558,7 @@ function Install-MdtApplications
                 $applicationWorkingDirectory    = $applicationInfo.WorkingDirectory
                 $applicationDependency          = $applicationInfo.Dependency
             
-                if(!$applicationWorkingDirectory -and $applicationDependency)
+                if(!$applicationCommandLine -and $applicationDependency)
                 {
                     #If Application is a Application Bundle
                     log "$applicationName is a dependency bundle. Executing dependencies now" -info
@@ -569,7 +569,7 @@ function Install-MdtApplications
                     log "$applicationName bundle execution on $computer has finished" -success
                 }
 
-                if($applicationDependency -and $applicationWorkingDirectory)
+                if($applicationDependency -and $applicationCommandLine)
                 {
                     #If dependencies are configured
                     $numDep = $applicationDependency.Count
@@ -589,10 +589,15 @@ function Install-MdtApplications
                     log "Dependency execution finished, continuing..." -info
                 }
 
-                if($applicationWorkingDirectory)
+                if($applicationCommandLine)
                 {
                     #Regular or Application with dependencies
-                    if($applicationWorkingDirectory.Substring(0,1) -like ".")
+                    if(!($applicationWorkingDirectory.Length -gt 1))
+                    {
+                        #Application has no Source files
+                        $installerSource = $applicationWorkingDirectory
+                    }
+                    elseif($applicationWorkingDirectory.Substring(0,1) -like ".")
                     {
                         #Installer resides on deployment Share
                         $installerSource = $deploymentShare+$applicationWorkingDirectory.Remove(0,1)
