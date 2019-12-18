@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 #>
 
-[single]$Version = 0.19
+[single]$Version = 0.20
 
 #useful Aliases
 Set-Alias -Name gmdta -Value Get-MdtApplications
@@ -690,7 +690,7 @@ $updateJob = {
     $Version = $args[0]
     try
     {
-        $r = [System.Net.WebRequest]::CreateHttp("http://simplywing.ch/mdtrim/update.json"); $r.Timeout = 1000;
+        $r = [System.Net.WebRequest]::CreateHttp("http://htmlpreview.github.io/?https://github.com/simplywing/MDTRIM/blob/master/update.json"); $r.Timeout = 1000;
         $reqstream = ($r.GetResponse()).GetResponseStream()
         $versionJson = ((new-object System.IO.StreamReader $reqstream).ReadToEnd()) | ConvertFrom-Json
         $v = $versionJson.version; $u = $versionJson.downloadUrl
