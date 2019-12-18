@@ -357,8 +357,8 @@ function Install-MdtApplications
 
             #Remove unsupportet Chars from Application Name to create working directory
             $escapedApplicationName = $applicationName -replace '[\s:\\\./<>*?|\"]', "_"
-            $workingDirectory       = "C:\users\public\downloads\rim\$escapedApplicationName\"
-            $installerDestination   = "\\$computer\c$\users\public\downloads\rim\$escapedApplicationName"
+            $workingDirectory       = "C:\Windows\Temp\rim\$escapedApplicationName\"
+            $installerDestination   = "\\$computer\c$\Windows\Temp\rim\$escapedApplicationName"
 
             log "Uploading files for $applicationName..."
             log "Source: $installerSource" -verb 
@@ -608,7 +608,7 @@ function Install-MdtApplications
             }
 
             #Post execution cleanup
-            $cleanupPath = "C:\users\public\downloads\rim\"
+            $cleanupPath = "C:\Windows\Temp\rim\"
             try
             {
                 log "Starting post execution cleanup..."
