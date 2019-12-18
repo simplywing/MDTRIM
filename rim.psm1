@@ -342,7 +342,7 @@ function Install-MdtApplications
                            Position=0)]
                 [string]$applicationName,
 
-                [Parameter(Mandatory=$true,
+                [Parameter(Mandatory=$false,
                            Position=1)]
                 [string]$installerSource,
 
@@ -360,26 +360,28 @@ function Install-MdtApplications
             $workingDirectory       = "C:\Windows\Temp\rim\$escapedApplicationName\"
             $installerDestination   = "\\$computer\c$\Windows\Temp\rim\$escapedApplicationName"
 
-            log "Uploading files for $applicationName..."
-            log "Source: $installerSource" -verb 
-            log "Dest: $installerDestination" -verb
-            $roboLog = Robocopy.exe $installerSource $installerDestination /MIR | out-null
-            switch ($LASTEXITCODE)
-            {
-                0  {log "No errors occurred, and no copying was done. The source and destination directory trees are completely synchronized."; break}
-                1  {log "One or more files were copied successfully (that is, new files have arrived)."; break}
-                2  {log "Some Extra files or directories were detected. No files were copied"; break}
-                3  {log "Some files were copied. Additional files were present. No failure was encountered."; break}
-                4  {log "Some Mismatched files or directories were detected."; break}
-                5  {log "Some files were copied. Some files were mismatched. No failure was encountered."; break}
-                6  {log "Additional files and mismatched files exist. No files were copied and no failures were encountered. This means that the files already exist in the destination directory"; break}
-                7  {log "Files were copied, a file mismatch was present, and additional files were present."; break}
-                8  {log "Some files or directories could not be copied (copy errors occurred and the retry limit was exceeded)." -err; break}
-                16 {log "Serious error. Robocopy did not copy any files. Either a usage error or an error due to insufficient access privileges on the source or destination directories." -err; break}
-            }
-
-            if(!(Test-Path $installerDestination)){
-                break
+            if($installerSource.Length -gt 1){
+                log "Uploading files for $applicationName..."
+                log "Source: $installerSource" -verb 
+                log "Dest: $installerDestination" -verb
+                $roboLog = Robocopy.exe $installerSource $installerDestination /MIR | out-null
+                switch ($LASTEXITCODE)
+                {
+                    0  {log "No errors occurred, and no copying was done. The source and destination directory trees are completely synchronized."; break}
+                    1  {log "One or more files were copied successfully (that is, new files have arrived)."; break}
+                    2  {log "Some Extra files or directories were detected. No files were copied"; break}
+                    3  {log "Some files were copied. Additional files were present. No failure was encountered."; break}
+                    4  {log "Some Mismatched files or directories were detected."; break}
+                    5  {log "Some files were copied. Some files were mismatched. No failure was encountered."; break}
+                    6  {log "Additional files and mismatched files exist. No files were copied and no failures were encountered. This means that the files already exist in the destination directory"; break}
+                    7  {log "Files were copied, a file mismatch was present, and additional files were present."; break}
+                    8  {log "Some files or directories could not be copied (copy errors occurred and the retry limit was exceeded)." -err; break}
+                    16 {log "Serious error. Robocopy did not copy any files. Either a usage error or an error due to insufficient access privileges on the source or destination directories." -err; break}
+                }
+    
+                if(!(Test-Path $installerDestination)){
+                    break
+                }    
             }
 
             ### Installing Application ###
